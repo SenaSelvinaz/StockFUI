@@ -1,3 +1,4 @@
+import 'package:deneme_test/data/workers_data.dart';
 import 'package:flutter/material.dart';
 
 // StatefulWidget
@@ -83,7 +84,7 @@ class _AddWorkerState extends State<AddWorker> {
                     DropdownMenuItem(value: "Ustabaşı", child: Text("Ustabaşı")),
                     DropdownMenuItem(value: "Ürün Planlama Sorumlusu", child: Text("Ürün Planlama Sorumlusu")),
                     DropdownMenuItem(value: "Satın Alma Birimi", child: Text("Satın Alma Birimi")),
-                    DropdownMenuItem(value: "Yönetici", child: Text("Yönetici")),
+                    //DropdownMenuItem(value: "Yönetici", child: Text("Yönetici")),
                   ],
                   onChanged: (value) {
                     setState(() {
@@ -130,6 +131,12 @@ class _AddWorkerState extends State<AddWorker> {
                     );
                     return;
                   }
+                  workersList.add({
+                    "name":name,
+                    "phone":phone,
+                    "status":status,
+                  });
+
                   //bilgileri göster
                   showDialog(context: context,
                    builder: (context)=> AlertDialog(
@@ -143,7 +150,6 @@ class _AddWorkerState extends State<AddWorker> {
                       TextButton(onPressed: (){
                         Navigator.pop(context);
                         nameController.clear();
-                        tcController.clear();
                         phoneController.clear();
                         selectedStatus = null; 
 
