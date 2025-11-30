@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'add_worker.dart';
-import 'delete_worker.dart';
 import 'record_operations_screen.dart';
 
 class mainUI extends StatelessWidget {
@@ -21,7 +19,7 @@ class mainUI extends StatelessWidget {
           // Sayfa içeriği buraya
           const Center(
             child: Text(
-              "Hoş Geldiniz!",
+              "Yönetici Ekranı",
               style: TextStyle(fontSize: 22),
             ),
           ),
@@ -56,41 +54,5 @@ class mainUI extends StatelessWidget {
     );
   }
 
-  /*void _showRecordOptions(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: Icon(Icons.person_add),
-              title: Text("Yeni Kayıt"),
-              onTap: () {
-                Navigator.pop(context);  // alt menüyü kapat
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => AddWorker()),
-                );
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.delete),
-              title: Text("Kayıt Sil"),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => DeleteWorker()),
-                );
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }*/
+
 }
