@@ -56,7 +56,7 @@ class mainUI extends StatelessWidget {
     );
   }
 
-  void _showRecordOptions(BuildContext context) {
+  /*void _showRecordOptions(BuildContext context) {
     showModalBottomSheet(
       context: context,
       shape: RoundedRectangleBorder(
@@ -92,5 +92,5 @@ class mainUI extends StatelessWidget {
         );
       },
     );
-  }
+  }*/
 }
