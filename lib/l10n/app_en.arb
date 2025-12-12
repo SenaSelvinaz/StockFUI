@@ -1,0 +1,8 @@
+{
+  "@@locale": "en",
+  "addNewWorker": "Add New Account",
+  "workers": "Workers",
+  "searchByPhone": "Search by phone number",
+  "managerPanel": "Manager Panel",
+  "foremanPanel": "Foreman Panel"
+}

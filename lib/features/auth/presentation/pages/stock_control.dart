@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../data/workers_data.dart';
-import '../cubit/auth_cubit.dart';
-import '../cubit/auth_state.dart';
-import '../../domain/entities/worker.dart';
 
 class StockControlPage extends StatefulWidget {
   const StockControlPage({super.key});
