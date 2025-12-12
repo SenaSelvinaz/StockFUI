@@ -28,7 +28,7 @@ class _DeleteWorkerPageState extends State<DeleteWorkerPage> {
                   child: TextField(
                     controller: searchController,
                     decoration: const InputDecoration(
-                      labelText: "Telefon numarası ile ara",
+                      labelText: "Telefon numarası/ad soyad ile ara",
                       labelStyle: TextStyle(
                         color: Color.fromARGB(255, 11, 26, 94)
                       ),

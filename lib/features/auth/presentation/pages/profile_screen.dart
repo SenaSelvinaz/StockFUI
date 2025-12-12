@@ -49,7 +49,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         unselectedItemColor: Colors.grey,
         onTap: (index) {
           if (index == 0) {
-            // Ana sayfaya geri dön
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (_) => const MainUI()),
@@ -64,7 +63,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // --- PROFIL KARTI ---
         Card(
           elevation: 2,
           color: const Color.fromARGB(255, 11, 26, 94),
@@ -99,7 +97,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
         const SizedBox(height: 25),
 
-        // --- AYARLAR ---
         Text(
           "Uygulama Ayarları",
           style: TextStyle(
@@ -155,7 +152,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
         const SizedBox(height: 25),
 
-        // ÇIKIŞ 
         SizedBox(
           width: double.infinity,
           child: OutlinedButton.icon(

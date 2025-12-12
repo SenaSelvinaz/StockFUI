@@ -28,7 +28,7 @@ class _AddWorkerPageState extends State<AddWorkerPage> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            /// Ad Soyad
+            // Ad Soyad
 
             TextField(
               controller: nameController,
@@ -36,7 +36,7 @@ class _AddWorkerPageState extends State<AddWorkerPage> {
             ),
             const SizedBox(height: 12),
 
-            /// Statü
+            // Statü
             DropdownButtonFormField<String>(
               initialValue: selectedStatus,
               items: const [
@@ -127,7 +127,7 @@ class _AddWorkerPageState extends State<AddWorkerPage> {
     
   showDialog(
     context: context,
-    barrierDismissible: false, // dışarı basınca kapanmasın
+    barrierDismissible: false,
     builder: (_) {
       return AlertDialog(
         title: const Text("Kayıt Onayı"),

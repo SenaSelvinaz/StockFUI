@@ -19,29 +19,24 @@ class AuthCubit extends Cubit<AuthState> {
 
   // Telefon ile arama
   void searchWorker(String query) {
-    // Arama metnini küçük harfe çevirip boşlukları trim'liyoruz.
     final searchQuery = query.trim().toLowerCase();
 
     if (searchQuery.isEmpty) {
-      // Eğer arama kutusu boşsa, tüm çalışanları göster.
+
       filteredWorkers = List.from(allWorkers);
     } else {
-      // 1. Filtreleme Mantığı: Başlangıcı Eşleştirme (Starts With)
+
       filteredWorkers = allWorkers.where((worker) {
-        // Telefon numarasını temizleyip küçük harfe çevirme
+
         final phone = worker.phone.replaceAll(' ', '').toLowerCase();
-        
-        // Varsayım: Worker nesnesinin 'name' veya 'fullName' alanı var.
         final name = worker.name.toLowerCase(); 
 
-        // Koşul: Çalışanın telefon numarası VEYA adı arama metniyle başlıyor mu?
         return phone.startsWith(searchQuery) || 
                name.startsWith(searchQuery);
 
       }).toList();
     }
     
-    // Filtrelenmiş listeyi yayınla
     emit(AuthLoaded(filteredWorkers));
   }
 

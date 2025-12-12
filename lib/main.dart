@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => AuthCubit(), // Cubit burada sağlanıyor
+      create: (_) => AuthCubit(), 
       child:  MaterialApp(
         debugShowCheckedModeBanner: false,
         localizationsDelegates: const [
