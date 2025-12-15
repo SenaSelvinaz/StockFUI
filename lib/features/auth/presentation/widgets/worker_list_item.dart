@@ -11,6 +11,17 @@ class WorkerListItem extends StatelessWidget {
   
   const WorkerListItem({super.key, required this.worker});
 
+    // 📱 Telefonu UI için formatla: 905XXXXXXXXX -> +90 5XX XXX XX XX
+  String _formatPhoneForUI(String phone) {
+    if (phone.startsWith('90') && phone.length == 12) {
+      return "+90 ${phone.substring(2, 5)} "
+             "${phone.substring(5, 8)} "
+             "${phone.substring(8, 10)} "
+             "${phone.substring(10)}";
+    }
+    return phone;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -36,8 +47,7 @@ class WorkerListItem extends StatelessWidget {
                 worker.status, 
                 style: TextStyle(color: AppTheme.secondaryTextColor),
               ),
-               Text(
-                worker.phone, 
+               Text(_formatPhoneForUI(worker.phone), 
                 style: TextStyle(color: AppTheme.secondaryTextColor),
               ),
             ],
@@ -71,5 +81,7 @@ class WorkerListItem extends StatelessWidget {
         const Divider(height: 1),
       ],
     );
+
+    
   }
 }

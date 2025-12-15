@@ -48,15 +48,40 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   // Silme
-  void deleteWorker(String phone) {
+
+  String _normalizePhone(String phone) {
+  return phone
+      .replaceAll('+', '')
+      .replaceAll(' ', '');
+      //.replaceFirst('90', '');
+}
+
+  /*void deleteWorker(String phone) {
     allWorkers.removeWhere((w) => w.phone == phone);
     filteredWorkers.removeWhere((w) => w.phone == phone);
     emit(AuthLoaded(filteredWorkers));
-  }
+  }*/
+
+  void deleteWorker(String phone) {
+  final normalized = _normalizePhone(phone);
+
+  allWorkers.removeWhere(
+    (w) => _normalizePhone(w.phone) == normalized,
+  );
+
+  filteredWorkers.removeWhere(
+    (w) => _normalizePhone(w.phone) == normalized,
+  );
+
+  emit(AuthLoaded(filteredWorkers));
+}
+
 
 
   void updateWorker(Worker updatedWorker, String originalPhone) {
-  final index = allWorkers.indexWhere((w) => w.phone == originalPhone);
+  final index = allWorkers.indexWhere(
+    (w) => w.phone == originalPhone || w.phone == updatedWorker.phone
+  );
 
   if (index != -1) { 
     allWorkers[index] = updatedWorker;

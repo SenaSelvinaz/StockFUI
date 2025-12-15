@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
@@ -47,7 +47,7 @@ class _UpdateWorkerPageState extends State<UpdateWorkerPage> {
       body: Column(
         children: [
 
-          Padding(
+        /*Padding(
             padding: const EdgeInsets.all(16.0),
             child: TextField(
               controller: _searchController,
@@ -58,7 +58,7 @@ class _UpdateWorkerPageState extends State<UpdateWorkerPage> {
               ),
               onChanged: _performSearch,
             ),
-          ),
+          ),*/
 
           Expanded(
             child: BlocBuilder<AuthCubit, AuthState>(
@@ -70,12 +70,12 @@ class _UpdateWorkerPageState extends State<UpdateWorkerPage> {
                 if (state is AuthLoaded) {
                   final workers = state.workers;
 
-                  if (workers.isEmpty) {
+                  /*if (workers.isEmpty) {
                     final message = _searchController.text.isNotEmpty
                         ? "Aradığınız kritere uygun çalışan bulunamadı."
                         : "Güncellenecek kayıt bulunmamaktadır.";
                     return Center(child: Text(message));
-                  }
+                  }*/
 
                   return ListView.builder(
                     itemCount: workers.length,
@@ -83,8 +83,8 @@ class _UpdateWorkerPageState extends State<UpdateWorkerPage> {
                       final worker = workers[index];
 
                       return ListTile(
-                        title: Text(worker.name),
-                        subtitle: Text("+90 ${worker.phone}"),
+                        //title: Text(worker.name),
+                        //subtitle: Text("+${worker.phone}"),
                         trailing: IconButton(
                           icon: const Icon(Icons.edit, color: Color.fromARGB(255, 11, 26, 94)),
                           onPressed: () async { 
@@ -124,4 +124,4 @@ class _UpdateWorkerPageState extends State<UpdateWorkerPage> {
       ),
     );
   }
-}
+}*/

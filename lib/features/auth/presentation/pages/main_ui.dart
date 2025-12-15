@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'record_operation_screen.dart';
 import 'stock_control.dart';
 import 'profile_screen.dart';
+import '/features/auth/presentation/pages/test_page.dart';
 
 class MainUI extends StatelessWidget {
   const MainUI({super.key});
@@ -23,7 +24,8 @@ class MainUI extends StatelessWidget {
         elevation: 1, //  gölge
         automaticallyImplyLeading: false,
       ),*/
-      body: SingleChildScrollView(
+      body: SafeArea(
+      child:SingleChildScrollView(
         padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,9 +78,19 @@ class MainUI extends StatelessWidget {
               destination: _buildPlaceholderScreen("İşlem Raporları Ekranı"),
               cardColor: const Color.fromARGB(255, 11, 26, 94),
             ),
+
+                /*_buildOperationCard(
+                 context,
+                  icon: Icons.cloud_download,
+                title: "Backend Test",
+                destination: TestPage(), // Buraya TestPage’i bağladık
+                cardColor: const Color.fromARGB(255, 11, 26, 94),
+                 ),*/
+
           ],
         ),
       ),
+    ),
    
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[

@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/theme/app_theme.dart';
 import 'features/auth/presentation/cubit/auth_cubit.dart';
 import 'features/auth/presentation/pages/main_ui.dart';
+import 'features/auth/presentation/pages/test_page.dart';
+
 import 'package:flutter_localizations/flutter_localizations.dart';
 //import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/worker.dart';
 import '../cubit/auth_cubit.dart';
+import 'package:dio/dio.dart'; // Dio için
+
+import 'package:flinder_app/core/services/api_service.dart';
+
 
 
 class EditWorkerPage extends StatefulWidget {
@@ -26,6 +30,8 @@ class _EditWorkerPageState extends State<EditWorkerPage> {
 
     super.initState();
     nameController = TextEditingController(text: widget.worker.name);
+
+    
     phoneController= TextEditingController(
       text:widget.worker.phone,
     );
@@ -56,6 +62,8 @@ class _EditWorkerPageState extends State<EditWorkerPage> {
                     child: Text("Ürün Planlama Sorumlusu")),
                 DropdownMenuItem(
                     value: "Satın Alma Birimi", child: Text("Satın Alma Birimi")),
+                DropdownMenuItem(
+                    value: "Yönetim", child: Text("Yönetim")),
               ],
               onChanged: (v) => setState(() => selectedStatus = v),
               decoration: const InputDecoration(labelText: "Statü"),
@@ -67,7 +75,7 @@ class _EditWorkerPageState extends State<EditWorkerPage> {
               keyboardType:TextInputType.phone,
               decoration: const InputDecoration(
                 labelText: "Telefon Numarası",
-                prefixText: "+90 ",
+                prefixText: "+",
                 border: OutlineInputBorder(),
               ),
             ),
@@ -110,16 +118,87 @@ class _EditWorkerPageState extends State<EditWorkerPage> {
       name: name, 
       phone: phone, 
       status: status);
+      _updateWorkerToApi(updated);
 
-    context.read<AuthCubit>().updateWorker(updated, widget.originalPhone);
-    Navigator.pop(context, updated);
+    //context.read<AuthCubit>().updateWorker(updated, widget.originalPhone);
+    //Navigator.pop(context, updated);
   }
 
 
   bool isValidTurkishPhone(String phone) {
     final digits = phone.replaceAll(RegExp(r'\D'), '');
-    return digits.length == 10 && digits.startsWith('5');
+    return digits.length == 12 ;
+    //&& digits.startsWith('5');
   }
+
+
+
+  //----------------------------
+  Future<void> _updateWorkerToApi(Worker updatedWorker) async {
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(content: Text("Güncelleme yapılıyor...")),
+  );
+
+  try {
+    // 1️⃣ Telefon değişmiş mi?
+    if (updatedWorker.phone != widget.originalPhone) {
+      await ApiService.put(
+        "/api/admin/update-phone",
+        data: {
+          "oldPhoneNumber": "${widget.originalPhone}",
+          "newPhoneNumber": "${updatedWorker.phone}",
+        },
+      );
+    }
+
+    // 2️⃣ İsim + Departman güncelle
+    //final parts = updatedWorker.name.split(" ");
+    final parts = updatedWorker.name.trim().split(RegExp(r'\s+'));
+
+    final firstName = parts.first;
+    final lastName =
+    parts.length > 1 ? parts.sublist(1).join(" ") : "";
+
+
+    await ApiService.put(
+      "/api/admin/update-worker",
+      data: {
+        "PhoneNumber": "${updatedWorker.phone}",
+        //"FirstName": parts.first,
+        //"LastName": parts.length > 1 ? parts.last : "",
+        "FirstName": firstName,
+        "LastName": lastName,
+
+        "Department": updatedWorker.status,
+      },
+    );
+
+    // 3️⃣ Local listeyi güncelle
+    context.read<AuthCubit>().updateWorker(
+      updatedWorker,
+      widget.originalPhone,
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Güncelleme başarılı")),
+    );
+
+    Navigator.pop(context, updatedWorker);
+
+  } on DioException catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(e.response?.data?['message'] ?? "API hatası")),
+    );
+  } catch (_) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Beklenmeyen hata oluştu")),
+    );
+  }
+}
+
+  
+
 
 
 

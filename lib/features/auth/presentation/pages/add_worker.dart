@@ -3,6 +3,10 @@ import '../../domain/entities/worker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../cubit/auth_cubit.dart';
 
+import 'package:dio/dio.dart'; // Dio için
+
+import 'package:flinder_app/core/services/api_service.dart';
+
 
 class AddWorkerPage extends StatefulWidget {
   const AddWorkerPage({super.key});
@@ -54,6 +58,9 @@ class _AddWorkerPageState extends State<AddWorkerPage> {
                   value: "Satın Alma Birimi",
                   child: Text("Satın Alma Birimi"),
                 ),
+                DropdownMenuItem(
+                  value: "Yönetim",
+                  child: Text("Yönetim")),
               ],
 
               onChanged: (value) => setState(() => selectedStatus = value),
@@ -123,6 +130,77 @@ class _AddWorkerPageState extends State<AddWorkerPage> {
     _showConfirmDialog(worker);
   }
 
+
+  Future<void> _addWorkerToApi(Worker worker) async {
+  // Diyalogu kapat (Kayıt işlemi devam ederken diyalog açık kalmasın)
+  Navigator.pop(context); 
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(content: Text("Çalışan kaydediliyor..."), duration: Duration(seconds: 10)),
+  );
+
+
+
+  final parts = worker.name.trim().split(RegExp(r'\s+'));
+
+  final firstName = parts.first;
+  final lastName =
+    parts.length > 1 ? parts.sublist(1).join(" ") : "";  
+  // Backend'in beklediği JSON formatı:
+  final payload = {
+    "Phone": "90${worker.phone.replaceAll(' ', '')}", // Örnek: "5301234567" -> "905301234567"
+    //"FirstName": worker.name.split(' ').first, // İlk kelimeyi ad olarak al
+    //"LastName": worker.name.split(' ').last,   // Son kelimeyi soyad olarak al
+    "FirstName":firstName, 
+    "LastName": lastName,   
+    "Department": worker.status, // Statü/Bölüm adını yolluyoruz (Backend'de Department olarak geçiyordu)
+    "Role": "Worker" // Varsayılan rol
+  };
+
+  try {
+    // API Çağrısı (data: named argument olarak geçildi)
+    final response = await ApiService.post(
+      "/api/admin/create-worker", 
+      data: payload
+    );
+
+    // 1. API'den Başarılı Yanıt Geldiyse (Status 200 OK)
+    // Bu noktada veri veritabanına kaydedildi ve SMS gönderildi.
+    
+    // 2. Cubit'e yerel olarak ekle (UI'ı güncellemek için)
+
+
+    final normalizedWorker = Worker(
+  name: worker.name,
+  phone: "90${worker.phone.replaceAll(' ', '')}",
+  status: worker.status,
+);
+    context.read<AuthCubit>().addWorker(worker);
+    
+    // 3. Başarılı geri bildirim ve inputları temizleme
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(response.data['message'] ?? 'Kayıt başarılı!')),
+    );
+    _clearInputs();
+    
+    // 4. Sayfayı kapat (isteğe bağlı)
+    // Navigator.pop(context); 
+
+  } on DioException catch (e) {
+    // 400 Bad Request veya 401 Unauthorized gibi API hataları
+    final errorMsg = e.response?.data?['message'] ?? "API'den hata yanıtı alındı.";
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Hata: $errorMsg')),
+    );
+  } catch (e) {
+    // Diğer genel hatalar (Ağ bağlantısı vb.)
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Kayıt sırasında beklenmeyen bir hata oluştu.')),
+    );
+  }
+}
+
   void _showConfirmDialog(Worker worker) {
     
   showDialog(
@@ -147,9 +225,10 @@ class _AddWorkerPageState extends State<AddWorkerPage> {
           ),
           ElevatedButton(
             onPressed: () { 
-              context.read<AuthCubit>().addWorker(worker);
-              Navigator.pop(context);
-              _clearInputs();
+              //context.read<AuthCubit>().addWorker(worker);
+              _addWorkerToApi(worker);
+              //Navigator.pop(context);
+              //_clearInputs();
             },
             child: const Text("Tamam"),
           ),

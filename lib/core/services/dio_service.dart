@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 class DioService {
   static Dio? _dio;
@@ -20,12 +21,15 @@ class DioService {
   static BaseOptions get _baseOptions {
     // Platform kontrolü
     String baseUrl;
-    if (Platform.isAndroid) {
-      baseUrl = 'http://10.0.2.2:5000'; // Android Emulator
+    if (kIsWeb) {
+      baseUrl = 'http://localhost:5045';
+    }else if(Platform.isAndroid){
+      baseUrl = 'http://10.0.2.2:5045'; // Android Emulator
+
     } else if (Platform.isIOS) {
       baseUrl = 'http://localhost:5000'; // iOS Simulator
     } else {
-      baseUrl = 'http://192.168.1.XXX:5000'; // Gerçek cihaz - IP'nizi yazın
+      baseUrl = 'http://255.255.248.0:5000'; // Gerçek cihaz - IP'nizi yazın
     }
 
     return BaseOptions(

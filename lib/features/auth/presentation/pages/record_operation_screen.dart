@@ -29,8 +29,7 @@ class RecordOperationsScreen extends StatelessWidget {
           ),
         ),
         
-        body:Expanded(
-          child: TabBarView(
+        body:TabBarView(
           physics: BouncingScrollPhysics(),
           children: [
             WorkerListPage(), 
@@ -38,7 +37,7 @@ class RecordOperationsScreen extends StatelessWidget {
             DeleteWorkerPage(),
           ],
         )
-        ) 
+         
       ),
     );
   }
