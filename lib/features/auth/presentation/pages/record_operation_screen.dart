@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flinder_app/l10n/app_localizations.dart';
 import 'add_worker.dart';
 import 'delete_worker.dart';
 import 'worker_list_page.dart';
@@ -11,34 +12,47 @@ class RecordOperationsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
     return DefaultTabController(
       length: 3, 
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text("Kayıt İşlemleri"),
-          leading: IconButton(
-            onPressed: ()=> Navigator.pop(context), 
-            icon: const Icon(Icons.arrow_back)
+      child: Directionality(
+        textDirection: isArabic ? TextDirection.ltr : Directionality.of(context),
+        child: Scaffold(
+          appBar: AppBar(
+            title: Directionality(
+              textDirection: isArabic ? TextDirection.rtl : Directionality.of(context),
+              child: Text(AppLocalizations.of(context)?.recordOperations ?? 'Record Operations'),
+            ),
+            leading: IconButton(
+              onPressed: ()=> Navigator.pop(context), 
+              icon: const Icon(Icons.arrow_back)
+            ),
+            bottom: TabBar(
+              tabs: [
+                Tab(text: AppLocalizations.of(context)?.workerList ?? 'Worker List'),
+                Tab(text: AppLocalizations.of(context)?.newRecord ?? 'New Record'),
+                Tab(text: AppLocalizations.of(context)?.deleteRecord ?? 'Delete Record'),
+              ],
+            ),
           ),
-          bottom: const TabBar(
-            tabs: [
-            Tab(text: "Çalışan Listesi"),
-            Tab(text: "Yeni Kayıt"),
-            Tab(text:"Kayıt Sil"),
+          
+          body: TabBarView(
+            physics: const BouncingScrollPhysics(),
+            children: [
+              _wrapForSupportedLocales(context, const WorkerListPage()), 
+              _wrapForSupportedLocales(context, const AddWorkerPage()),
+              _wrapForSupportedLocales(context, const DeleteWorkerPage()),
             ],
           ),
         ),
-        
-        body:TabBarView(
-          physics: BouncingScrollPhysics(),
-          children: [
-            WorkerListPage(), 
-            AddWorkerPage(),
-            DeleteWorkerPage(),
-          ],
-        )
-         
       ),
     );
+  }
+
+  Widget _wrapForSupportedLocales(BuildContext context, Widget child) {
+    final code = Localizations.localeOf(context).languageCode;
+    const supported = ['tr', 'en'];
+    final locale = supported.contains(code) ? Localizations.localeOf(context) : const Locale('en');
+    return Localizations.override(context: context, locale: locale, child: child);
   }
 }

@@ -3,10 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/theme/app_theme.dart';
 import 'features/auth/presentation/cubit/auth_cubit.dart';
 import 'features/auth/presentation/pages/main_ui.dart';
-import 'features/auth/presentation/pages/test_page.dart';
+//import 'features/auth/presentation/pages/test_page.dart';
 
 import 'package:flutter_localizations/flutter_localizations.dart';
-//import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flinder_app/l10n/app_localizations.dart';
+import 'core/localization/locale_cubit.dart';
+import 'l10n/l10n.dart';
 
 
 void main() {
@@ -18,22 +20,27 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => AuthCubit(), 
-      child:  MaterialApp(
-        debugShowCheckedModeBanner: false,
-        localizationsDelegates: const [
-        //AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => AuthCubit()),
+        BlocProvider(create: (_) => LocaleCubit()),
       ],
-      supportedLocales: const [
-        Locale('en'),
-        Locale('tr'),
-      ],
-        theme: AppTheme.lightTheme,
-        home:  MainUI(), // Ana ekran burada başlatılıyor
+      child: BlocBuilder<LocaleCubit, Locale>(
+        builder: (context, locale) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            locale: locale,
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: l10n.all,
+            theme: AppTheme.lightTheme,
+            home: const MainUI(), // Ana ekran burada başlatılıyor
+          );
+        },
       ),
     );
   }

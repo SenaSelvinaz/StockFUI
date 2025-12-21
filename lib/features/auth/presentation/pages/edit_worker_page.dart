@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/worker.dart';
@@ -35,7 +34,7 @@ class _EditWorkerPageState extends State<EditWorkerPage> {
     phoneController= TextEditingController(
       text:widget.worker.phone,
     );
-    selectedStatus=widget.worker.status;
+    selectedStatus=widget.worker.role;
   }
 
   @override
@@ -55,15 +54,15 @@ class _EditWorkerPageState extends State<EditWorkerPage> {
             DropdownButtonFormField<String>(
               initialValue: selectedStatus,
               items: const [
-                DropdownMenuItem(value: "Usta", child: Text("Usta")),
-                DropdownMenuItem(value: "Ustabaşı", child: Text("Ustabaşı")),
+                DropdownMenuItem(value: "Worker", child: Text("Usta")),
+                DropdownMenuItem(value: "Foreman", child: Text("Ustabaşı")),
                 DropdownMenuItem(
-                    value: "Ürün Planlama Sorumlusu",
+                    value: "ProductionPlanner",
                     child: Text("Ürün Planlama Sorumlusu")),
                 DropdownMenuItem(
-                    value: "Satın Alma Birimi", child: Text("Satın Alma Birimi")),
+                    value: "Purchasing", child: Text("Satın Alma Birimi")),
                 DropdownMenuItem(
-                    value: "Yönetim", child: Text("Yönetim")),
+                    value: "Admin", child: Text("Yönetim")),
               ],
               onChanged: (v) => setState(() => selectedStatus = v),
               decoration: const InputDecoration(labelText: "Statü"),
@@ -117,7 +116,7 @@ class _EditWorkerPageState extends State<EditWorkerPage> {
     final updated = Worker(
       name: name, 
       phone: phone, 
-      status: status);
+      role: status);
       _updateWorkerToApi(updated);
 
     //context.read<AuthCubit>().updateWorker(updated, widget.originalPhone);
@@ -170,7 +169,7 @@ class _EditWorkerPageState extends State<EditWorkerPage> {
         "FirstName": firstName,
         "LastName": lastName,
 
-        "Department": updatedWorker.status,
+        "Department": updatedWorker.role,
       },
     );
 

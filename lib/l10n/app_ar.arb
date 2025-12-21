@@ -1,0 +1,63 @@
+{
+	"@@locale": "ar",
+	"profileTitle": "صفحتي",
+	"appSettings": "إعدادات التطبيق",
+	"languageSelection": "اختيار اللغة",
+	"logout": "تسجيل الخروج",
+	"home": "الصفحة الرئيسية",
+	"profile": "الملف الشخصي",
+	"phoneNumber": "رقم الهاتف",
+	"role": "الدور",
+	"namePlaceholder": "الاسم الكامل (مستخدم مثال)",
+	"languageChanged": "تم تغيير اللغة: {language}",
+	"@languageChanged": {
+		"placeholders": {
+			"language": {}
+		}
+	}
+	,
+	"workerList": "قائمة الموظفين",
+	"newRecord": "سجل جديد",
+	"deleteRecord": "حذف السجل",
+	"enterWorkerName": "أدخل الاسم الكامل للموظف",
+	"status": "الحالة",
+	"enterPhone": "أدخل رقم هاتف الموظف",
+	"phoneHint": "5xx xxx xx xx",
+	"save": "حفظ",
+	"fillAllFields": "يرجى ملء جميع الحقول",
+	"invalidPhone": "رقم هاتف غير صالح. مثال: 5xx xxx xx xx",
+	"savingWorker": "جاري حفظ الموظف...",
+	"confirmSaveTitle": "تأكيد الحفظ",
+	"cancel": "إلغاء",
+	"ok": "موافق",
+	"searchHint": "ابحث بالهاتف/الاسم 5xx xxxxxxx",
+	"noRecords": "لم يتم العثور على سجلات",
+	"deleting": "جاري حذف السجل...",
+	"deleteConfirmTitle": "تأكيد الحذف",
+	"deleteConfirmMessage": "هل أنت متأكد أنك تريد حذف هذا الشخص؟",
+	"yesDelete": "نعم، احذف",
+	"recordDeleted": "تم حذف الموظف بنجاح.",
+	"errorOccurred": "حدث خطأ"
+	,
+	"managerPanel": "لوحة المدير",
+	"statusManagement": "الإدارة",
+	"statusPurchasing": "قسم الشراء",
+	"statusProductPlanning": "مسؤول تخطيط المنتج",
+	"statusCraftsman": "حرفي",
+	"statusForeman": "رئيس العمال",
+	"cutting": "تقطيع",
+	"drilling": "حفر",
+	"packaging": "تغليف",
+	"welding": "لحام",
+	"workerNameLabel": "الاسم",
+	"recordOperations": "تسجيل الموظف",
+	"stockControl": "مراقبة المخزون",
+	"jobTracking": "متابعة العمل",
+	"operationReports": "تقارير العمليات",
+	"comingSoon": "سيتم إضافة {title} قريبًا.",
+	"@comingSoon": {
+		"placeholders": {
+			"title": {}
+		}
+	}
+}

@@ -51,7 +51,7 @@ class WorkerCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    "Statü: ${worker.status}",
+                    "Statü: ${worker.role}",
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ],

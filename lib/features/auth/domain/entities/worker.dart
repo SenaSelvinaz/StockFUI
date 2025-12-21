@@ -1,11 +1,27 @@
 class Worker {
+  //final String id;
   final String name;
   final String phone;
-  final String status;
+  final String role; // Worker/Foreman/...
 
-  Worker({
+  const Worker({
+    //required this.id,
     required this.name,
     required this.phone,
-    required this.status,
+    required this.role,
   });
+
+  Worker copyWith({
+    //String? id,
+    String? name,
+    String? phone,
+    String? role,
+  }) {
+    return Worker(
+     // id: id ?? this.id,
+      name: name ?? this.name,
+      phone: phone ?? this.phone,
+      role: role ?? this.role,
+    );
+  }
 }

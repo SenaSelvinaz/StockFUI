@@ -1,8 +1,64 @@
 {
   "@@locale": "tr",
-  "addNewWorker": "Yeni Kayıt Ekle",
-  "workers": "Çalışanlar",
-  "searchByPhone": "Telefon numarası ile ara",
+  "profileTitle": "Profilim",
+  "appSettings": "Uygulama Ayarları",
+  "languageSelection": "Dil Seçimi",
+  "logout": "Çıkış Yap",
+  "home": "Ana Sayfa",
+  "profile": "Profil",
+  "phoneNumber": "Telefon Numarası",
+  "role": "Yetki Düzeyi",
+  "namePlaceholder": "Ad Soyad (Örnek Kullanıcı)",
+  "languageChanged": "Dil değiştirildi: {language}",
+  "@languageChanged": {
+    "placeholders": {
+      "language": {}
+    }
+  }
+  ,
   "managerPanel": "Yönetici Paneli",
-  "foremanPanel": "Usta Paneli"
+  "recordOperations": "Çalışan Kayıt İşlemleri",
+  "stockControl": "Stok Takip",
+  "jobTracking": "İş Takip",
+  "operationReports": "İşlem Raporları",
+  "comingSoon": "{title} yakında eklenecektir.",
+  "@comingSoon": {
+    "placeholders": {
+      "title": {}
+    }
+  }
+  ,
+  "workerList": "Çalışan Listesi",
+  "newRecord": "Yeni Kayıt",
+  "deleteRecord": "Kayıt Sil",
+  "enterWorkerName": "Çalışanın adını ve soyadını girin",
+  "status": "Statü",
+  "enterPhone": "Çalışanın telefon numarasını giriniz",
+  "phoneHint": "5xx xxx xx xx",
+  "save": "Kaydet",
+  "fillAllFields": "Lütfen tüm alanları doldurun",
+  "invalidPhone": "Geçersiz telefon numarası. Örn: 5xx xxx xx xx",
+  "savingWorker": "Çalışan kaydediliyor...",
+  "confirmSaveTitle": "Kayıt Onayı",
+  "cancel": "İptal",
+  "ok": "Tamam",
+  "searchHint": "Telefon numarası/ad soyad ile ara 5xx xxxxxxx",
+  "noRecords": "Kayıt bulunamadı",
+  "deleting": "Kayıt siliniyor...",
+  "deleteConfirmTitle": "Silme Onayı",
+  "deleteConfirmMessage": "Bu kişiyi silmek istediğinize emin misiniz?",
+  "yesDelete": "Evet, Sil",
+  "recordDeleted": "Çalışan başarıyla silindi.",
+  "errorOccurred": "Bir hata oluştu",
+  "onlyAdmins": "Bu işlemleri sadece yönetici yapabilir.",
+  "statusManagement": "Yönetim",
+  "statusPurchasing": "Satın Alma Birimi",
+  "statusProductPlanning": "Ürün Planlama Sorumlusu",
+  "statusCraftsman": "Usta",
+  "statusForeman": "Ustabaşı",
+  "cutting": "Kesim",
+  "drilling": "Delikleme",
+  "packaging": "Paketleme",
+  "welding": "Kaynak",
+  "workerNameLabel": "İsim"
 }

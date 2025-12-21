@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flinder_app/l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
@@ -46,22 +47,10 @@ Future<void> _fetchAndLoadWorkers() async {
 
         final String phoneNumber = (item['phoneNumber'] as String? ?? '').replaceAll(' ', '');
 
-       // String cleanedPhone = phoneNumber;
-       /* if (cleanedPhone.startsWith('90')) {
-        // 90'ı kaldırıp, sadece 10 haneli kısmı bırakıyoruz
-        cleanedPhone = cleanedPhone.substring(2).replaceAll(' ', ''); 
-       }*/
-      
         return Worker(
-            /*name: item['FullName'] ?? 'İsimsiz',
-            // Telefon numarasını temizliyoruz (backend'de +90 yoktu, frontend'de ekleriz)
-            phone: (item['PhoneNumber'] as String).replaceAll('+90', '').replaceAll(' ', ''), 
-            status: item['Department'] ?? 'Belirsiz', // Backend'de Department idi*/
-
             name: item['fullName'] ?? 'İsimsiz', // FullName null ise 'İsimsiz' ata.
-            //phone: cleanedPhone, // Artık null olmadığından eminiz
             phone: phoneNumber.replaceAll(' ', ''), // 905XXXXXXXXX,
-            status: item['department'] ?? 'Belirsiz', // Department null ise 'Belirsiz' ata.
+            role: item['role'] ?? 'Worker', // Department null ise 'Worker' ata.
         );
     }).toList();
     
@@ -87,91 +76,79 @@ Future<void> _fetchAndLoadWorkers() async {
   }
 }
 
+
+String roleLabel(BuildContext context, String role) {
+  switch (role) {
+    case 'Admin':
+      return AppLocalizations.of(context)?.statusManagement ?? 'Yönetim';
+    case 'Purchasing':
+      return AppLocalizations.of(context)?.statusPurchasing ?? 'Satın Alma Birimi';
+    case 'ProductionPlanner':
+      return AppLocalizations.of(context)?.statusProductPlanning ?? 'Ürün Planlama Sorumlusu';
+    case 'Foreman':
+      return AppLocalizations.of(context)?.statusForeman ?? 'Ustabaşı';
+    case 'Worker':
+      return AppLocalizations.of(context)?.statusCraftsman ?? 'Usta';
+    default:
+      return role; // bilinmeyen rol gelirse en azından kodu göster
+  }
+}
+
+
   @override
   Widget build(BuildContext context) {
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
     return Scaffold(
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: searchController,
-                    decoration: const InputDecoration(
-                      labelText: "Telefon numarası/ad soyad ile ara 5xx xxxxxxx",
-                      labelStyle: TextStyle(
-                        color: Color.fromARGB(255, 11, 26, 94),
+      body: Directionality(
+        textDirection: isArabic ? TextDirection.ltr : Directionality.of(context),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: searchController,
+                      textAlign: isArabic ? TextAlign.right : TextAlign.left,
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)?.searchHint ?? 'Search by phone/name',
+                        labelStyle: const TextStyle(color: Color.fromARGB(255, 11, 26, 94)),
+                        enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color.fromARGB(255, 11, 26, 94), width: 1.5)),
+                        focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color.fromARGB(255, 11, 26, 94), width: 2)),
+                        border: const OutlineInputBorder(),
                       ),
-
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Color.fromARGB(255, 11, 26, 94), 
-                          width: 1.5,
-                        ),
-                      ),
-
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Color.fromARGB(255, 11, 26, 94),
-                          width: 2,
-                        ),
-                      ),
-                      
-                      border: OutlineInputBorder(),
+                      onChanged: (value) => context.read<AuthCubit>().searchWorker(value),
                     ),
-
-                    onChanged: (value){
-                      context.read<AuthCubit>().searchWorker(value);
-                    },
                   ),
-                ),
-
-                IconButton(
-                  onPressed: () {
-                    context.read<AuthCubit>().searchWorker(
-                      searchController.text.trim(),
-                    );
-                  },
-                  icon: const Icon(Icons.search),
-                ),
-              ],
+                  IconButton(
+                    icon: const Icon(Icons.search),
+                    onPressed: () => context.read<AuthCubit>().searchWorker(searchController.text.trim()),
+                  ),
+                ],
+              ),
             ),
-          ),
-
-          Expanded(
-            child: BlocBuilder<AuthCubit, AuthState>(
-              builder: (context, state) {
-                if (state is AuthLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                if (state is AuthLoaded) {
-                  final workers = state.workers;
-
-                  if (workers.isEmpty) {
-                    return const Center(
-                      child: Text("Aradığınız kritere uygun çalışan bulunamadı."),
+            Expanded(
+              child: BlocBuilder<AuthCubit, AuthState>(
+                builder: (context, state) {
+                  if (state is AuthLoading) return const Center(child: CircularProgressIndicator());
+                  if (state is AuthLoaded) {
+                    final workers = state.workers;
+                    if (workers.isEmpty) return Center(child: Text(AppLocalizations.of(context)?.noRecords ?? 'No records found'));
+                    return ListView.builder(
+                      itemCount: workers.length,
+                      itemBuilder: (context, index) {
+                        final worker = workers[index];
+                        return WorkerListItem(worker: worker);
+                      },
                     );
                   }
-
-                  return ListView.builder(
-                    itemCount: workers.length,
-                    itemBuilder: (context, index) {
-                      final worker = workers[index];
-                      return WorkerListItem(worker: worker);
-                    },
-                  );
-                }
-
-                return const Center(
-                  child: Text("Çalışan listesi yüklenirken bir hata oluştu."),
-                );
-              },
+                  return Center(child: Text(AppLocalizations.of(context)?.errorOccurred ?? 'An error occurred'));
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

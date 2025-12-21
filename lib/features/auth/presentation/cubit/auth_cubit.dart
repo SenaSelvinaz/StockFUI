@@ -9,6 +9,14 @@ class AuthCubit extends Cubit<AuthState> {
   List<Worker> filteredWorkers = [];
   //Worker currentUser;
 
+  // Whether current user is an admin (controls visibility of worker management actions)
+  bool isAdmin = true;
+
+  void setAdmin(bool value) {
+    isAdmin = value;
+    // no state emission needed for now; UI reads the flag directly
+  }
+
 
 
   void loadWorkers(List<Worker> list) {

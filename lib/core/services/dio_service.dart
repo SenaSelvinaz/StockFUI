@@ -22,9 +22,9 @@ class DioService {
     // Platform kontrolü
     String baseUrl;
     if (kIsWeb) {
-      baseUrl = 'http://localhost:5045';
+      baseUrl = 'http://localhost:5192';
     }else if(Platform.isAndroid){
-      baseUrl = 'http://10.0.2.2:5045'; // Android Emulator
+      baseUrl = 'http://10.0.2.2:5192'; // Android Emulator
 
     } else if (Platform.isIOS) {
       baseUrl = 'http://localhost:5000'; // iOS Simulator

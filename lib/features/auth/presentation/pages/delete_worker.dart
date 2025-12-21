@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
-import 'package:dio/dio.dart'; // Dio için
+import 'package:dio/dio.dart';
+import 'package:flinder_app/l10n/app_localizations.dart';
 import '../../domain/entities/worker.dart';
 import 'package:flinder_app/core/services/api_service.dart';
+import '../widgets/worker_list_item.dart';
 
 class DeleteWorkerPage extends StatefulWidget {
   const DeleteWorkerPage({super.key});
@@ -16,214 +18,254 @@ class DeleteWorkerPage extends StatefulWidget {
 class _DeleteWorkerPageState extends State<DeleteWorkerPage> {
   final TextEditingController searchController = TextEditingController();
 
-   String _formatPhoneForUI(String phone) {
-    if (phone.startsWith('90') && phone.length == 12) {
-      return "+90 ${phone.substring(2, 5)} "
-             "${phone.substring(5, 8)} "
-             "${phone.substring(8, 10)} "
-             "${phone.substring(10)}";
+  @override
+  void initState() {
+    super.initState();
+    _fetchAndLoadWorkers();
+  }
+
+  Future<void> _fetchAndLoadWorkers() async {
+    try {
+      final response = await ApiService.get("/api/admin/users");
+      final List rawWorkers = response.data['data'] ?? [];
+
+      final List<Worker> workers = rawWorkers.map((item) {
+        final String phoneNumber =
+            (item['phoneNumber'] as String? ?? '').replaceAll(' ', '');
+
+        return Worker(
+          name: item['fullName'] ?? 'İsimsiz',
+          phone: phoneNumber.replaceAll(' ', ''),
+          role: item['role'] ?? 'Worker',
+        );
+      }).toList();
+
+      if (mounted) {
+        context.read<AuthCubit>().loadWorkers(workers);
+      }
+    } on DioException catch (e) {
+      if (mounted && e.response?.statusCode != 404) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Kullanıcı listesi yüklenemedi: ${e.response?.statusCode}',
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Ağ bağlantısı hatası.')),
+        );
+      }
     }
-    return phone;
   }
 
   @override
   Widget build(BuildContext context) {
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+
     return Scaffold(
-
-      body: Column(
-        children: [
-          
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: searchController,
-                    decoration: const InputDecoration(
-                      labelText: "Telefon numarası/ad soyad ile ara",
-                      labelStyle: TextStyle(
-                        color: Color.fromARGB(255, 11, 26, 94)
-                      ),
-
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Color.fromARGB(255, 11, 26, 94), 
-                          width: 1.5,
+      body: Directionality(
+        textDirection:
+            isArabic ? TextDirection.ltr : Directionality.of(context),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: searchController,
+                      textAlign:
+                          isArabic ? TextAlign.right : TextAlign.left,
+                      decoration: InputDecoration(
+                        labelText:
+                            AppLocalizations.of(context)?.searchHint ??
+                                'Search by phone/name',
+                        enabledBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color.fromARGB(255, 11, 26, 94),
+                            width: 1.5,
+                          ),
+                        ),
+                        focusedBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color.fromARGB(255, 11, 26, 94),
+                            width: 2,
+                          ),
                         ),
                       ),
-                      
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Color.fromARGB(255, 11, 26, 94),
-                          width: 2,
-                        ),
-                      ),
-
-                      border: OutlineInputBorder(),
+                      onChanged: (value) {
+                        context.read<AuthCubit>().searchWorker(value);
+                      },
                     ),
-
-                     onChanged: (value){
-                      context.read<AuthCubit>().searchWorker(value);
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.search),
+                    onPressed: () {
+                      context
+                          .read<AuthCubit>()
+                          .searchWorker(searchController.text.trim());
                     },
                   ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.search),
-                  onPressed: () {
-                    context.read<AuthCubit>().searchWorker(
-                          searchController.text.trim(),
-                        );
-                  },
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-
-          // LİSTE
-          Expanded(
-            child: BlocBuilder<AuthCubit, AuthState>(
-              builder: (context, state) {
-
-                if (state is AuthLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                if (state is AuthLoaded) {
-                  final workers = state.workers;
-
-                  if (workers.isEmpty) {
-                    return const Center(child: Text("Kayıt bulunamadı"));
+            Expanded(
+              child: BlocBuilder<AuthCubit, AuthState>(
+                builder: (context, state) {
+                  if (state is AuthLoading) {
+                    return const Center(
+                        child: CircularProgressIndicator());
                   }
 
-                  return ListView.builder(
-                    itemCount: workers.length,
-                    itemBuilder: (_, index) {
-                      final worker = workers[index];
+                  if (state is AuthLoaded) {
+                    final workers = state.workers;
 
-                      return ListTile(
-                        title: Text(worker.name),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(_formatPhoneForUI(worker.phone),),
-                            Text(worker.status),
-                          ],
-                        ),
-
-                        trailing: IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          onPressed: () {
-                            _confirmDelete(context, worker);
-                          },
+                    if (workers.isEmpty) {
+                      return Center(
+                        child: Text(
+                          AppLocalizations.of(context)?.noRecords ??
+                              'No records found',
                         ),
                       );
-                    },
-                  );
-                }
+                    }
 
-                return const Center(child: Text("Bir hata oluştu"));
-              },
+                    return ListView.builder(
+                      itemCount: workers.length,
+                      itemBuilder: (context, index) {
+                        final worker = workers[index];
+                        return WorkerListItem(
+                          worker: worker,
+                          trailing: IconButton(
+                            icon: const Icon(Icons.delete,
+                                color:  Color.fromARGB(255, 11, 26, 94)),
+                            onPressed: () {
+                              _confirmDelete(context, worker);
+                            },
+                          ),
+                        );
+                      },
+                    );
+                  }
+
+                  return Center(
+                    child: Text(
+                      AppLocalizations.of(context)?.errorOccurred ??
+                          'An error occurred',
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  // _DeleteWorkerPageState sınıfı içinde, örneğin _confirmDelete metodundan hemen sonra
 
-// ✅ YENİ: Backend'den silme (pasif hale getirme) işlemini yapan fonksiyon
-Future<void> _deleteWorkerFromApi(BuildContext context, Worker worker) async {
-  // Diyalogu kapat (İşlem devam ederken diyalog açık kalmasın)
-  Navigator.pop(context);
-
-  // Telefon numarasını backend'in beklediği formata hazırlayın.
-  // Backend'de {phoneNumber} parametresi kullanıldığı için sadece numara yeterli.
-  //final phoneWithoutCountryCode = worker.phone.replaceAll(' ', '');
-  final phoneWithoutCountryCode = worker.phone
-    .replaceAll('+', '')
-    .replaceAll(' ', '');
-    //.replaceFirst('90', '');
-
-
-  ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(content: Text("Kayıt siliniyor..."), duration: Duration(seconds: 3)),
-  );
-  
-  try {
-
-    print("DELETE GİDEN NUMARA: $phoneWithoutCountryCode");
-
-    // API Çağrısı: DELETE /api/admin/delete-user/{phoneNumber}
-    // Örnek: DELETE /api/admin/delete-user/5301234567
-    final response = await ApiService.delete(
-      "/api/admin/delete-user/$phoneWithoutCountryCode",
-    );
-
-    // 1. API'den Başarılı Yanıt Geldiyse (Status 200 OK)
-    
-    // 2. Cubit'e yerel olarak silme işlemini yap (UI'ı güncellemek için)
-    // Cubit, silme işlemi için 'phone' bekliyor
-    context.read<AuthCubit>().deleteWorker(worker.phone); 
-    
-    // 3. Başarılı geri bildirim
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(response.data['message'] ?? 'Çalışan başarıyla silindi.')),
-    );
-
-  } on DioException catch (e) {
-    // Hata geri bildirimi
-    final errorMsg = e.response?.data?['message'] ?? "Silme işlemi sırasında bir hata oluştu.";
-    
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Hata: $errorMsg')),
-    );
-  } catch (e) {
-    // Genel hata (Ağ bağlantısı vb.)
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Beklenmeyen bir hata oluştu.')),
-    );
+  String _roleLabel(BuildContext context, String role) {
+  switch (role) {
+    case 'Admin':
+      return AppLocalizations.of(context)?.statusManagement ?? 'Yönetim';
+    case 'Purchasing':
+      return AppLocalizations.of(context)?.statusPurchasing ?? 'Satın Alma Birimi';
+    case 'ProductionPlanner':
+      return AppLocalizations.of(context)?.statusProductPlanning ?? 'Ürün Planlama';
+    case 'Foreman':
+      return AppLocalizations.of(context)?.statusForeman ?? 'Ustabaşı';
+    case 'Worker':
+      return AppLocalizations.of(context)?.statusCraftsman ?? 'Usta';
+    default:
+      return role;
   }
 }
-  void _confirmDelete(BuildContext context, worker) {
+
+
+  Future<void> _deleteWorkerFromApi(
+      BuildContext context, Worker worker) async {
+    Navigator.pop(context);
+
+    final phoneWithoutCountryCode = worker.phone
+        .replaceAll('+', '')
+        .replaceAll(' ', '');
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          AppLocalizations.of(context)?.deleting ??
+              'Deleting record...',
+        ),
+      ),
+    );
+
+    try {
+      final response = await ApiService.delete(
+        "/api/admin/delete-user/$phoneWithoutCountryCode",
+      );
+
+      context.read<AuthCubit>().deleteWorker(worker.phone);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content:
+              Text(response.data['message'] ?? 'Çalışan silindi'),
+        ),
+      );
+    } on DioException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            e.response?.data?['message'] ??
+                'Silme sırasında hata oluştu',
+          ),
+        ),
+      );
+    }
+  }
+
+  void _confirmDelete(BuildContext context, Worker worker) {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text("Silme Onayı"),
+        title: Text(
+          AppLocalizations.of(context)?.deleteConfirmTitle ??
+              'Delete Confirmation',
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Ad: ${worker.name}"),
-            Text("Telefon: +${worker.phone}"),
-            Text("Statü: ${worker.status}"),
+            Text('${AppLocalizations.of(context)?.workerNameLabel ?? 'Adı Soyadı'}: ${worker.name}'),
+            Text('${AppLocalizations.of(context)?.phoneNumber ?? 'Telefon'}: +${worker.phone}'),
+            Text('${AppLocalizations.of(context)?.role ?? 'Rol'}: ${_roleLabel(context, worker.role)}'),
             const SizedBox(height: 12),
-            const Text(
-              "Bu kişiyi silmek istediğinize emin misiniz?",
-              style: TextStyle(fontWeight: FontWeight.bold),
+            Text(
+              AppLocalizations.of(context)?.deleteConfirmMessage ??
+                  'Are you sure?',
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ],
         ),
-
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text("İptal"),
+            child: Text(
+              AppLocalizations.of(context)?.cancel ?? 'Cancel',
+            ),
           ),
-
           TextButton(
             onPressed: () {
-              //context.read<AuthCubit>().deleteWorker(worker.phone);
-
-              //Navigator.pop(context);
               _deleteWorkerFromApi(context, worker);
-
-              /*ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Kayıt silindi")),
-              );*/
             },
-            child: const Text("Evet, Sil"),
+            child: Text(
+              AppLocalizations.of(context)?.yesDelete ??
+                  'Yes, Delete',
+            ),
           ),
         ],
       ),

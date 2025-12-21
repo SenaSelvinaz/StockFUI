@@ -5,4 +5,66 @@
   "searchByPhone": "Search by phone number",
   "managerPanel": "Manager Panel",
   "foremanPanel": "Foreman Panel"
+  ,
+  "profileTitle": "Profile",
+  "appSettings": "App Settings",
+  "languageSelection": "Language",
+  "logout": "Logout",
+  "home": "Home",
+  "profile": "Profile",
+  "phoneNumber": "Phone Number",
+  "role": "Role",
+  "namePlaceholder": "Full Name (Example User)",
+  "languageChanged": "Language changed: {language}",
+  "@languageChanged": {
+    "placeholders": {
+      "language": {}
+    }
+  }
+  ,
+  "managerPanel": "Manager Panel",
+  "recordOperations": "Worker Registration",
+  "stockControl": "Stock Control",
+  "jobTracking": "Job Tracking",
+  "operationReports": "Operation Reports",
+  "comingSoon": "{title} will be added soon.",
+  "@comingSoon": {
+    "placeholders": {
+      "title": {}
+    }
+  }
+  ,
+  "workerList": "Worker List",
+  "newRecord": "New Record",
+  "deleteRecord": "Delete Record",
+  "enterWorkerName": "Enter worker's full name",
+  "status": "Status",
+  "enterPhone": "Enter worker's phone number",
+  "phoneHint": "5xx xxx xx xx",
+  "save": "Save",
+  "fillAllFields": "Please fill all fields",
+  "invalidPhone": "Invalid phone number. E.g.: 5xx xxx xx xx",
+  "savingWorker": "Saving worker...",
+  "confirmSaveTitle": "Save Confirmation",
+  "cancel": "Cancel",
+  "ok": "OK",
+  "searchHint": "Search by phone/name 5xx xxxxxxx",
+  "noRecords": "No records found",
+  "deleting": "Deleting record...",
+  "deleteConfirmTitle": "Delete Confirmation",
+  "deleteConfirmMessage": "Are you sure you want to delete this person?",
+  "yesDelete": "Yes, Delete",
+  "recordDeleted": "Worker deleted successfully.",
+  "errorOccurred": "An error occurred",
+  "onlyAdmins": "Only admins can perform this action.",
+  "statusManagement": "Management",
+  "statusPurchasing": "Purchasing Department",
+  "statusProductPlanning": "Product Planning Manager",
+  "statusCraftsman": "Craftsman",
+  "statusForeman": "Foreman",
+  "cutting": "Cutting",
+  "drilling": "Drilling",
+  "packaging": "Packaging",
+  "welding": "Welding",
+  "workerNameLabel": "Name"
 }

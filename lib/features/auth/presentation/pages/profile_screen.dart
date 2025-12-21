@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'main_ui.dart';
+import 'package:flinder_app/l10n/app_localizations.dart';
+import 'package:flinder_app/core/localization/locale_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -13,13 +16,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final List<String> _languages = ['Türkçe', 'English', 'العربية'];
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final localeCode = context.read<LocaleCubit>().state.languageCode;
+      setState(() {
+        if (localeCode == 'en') _selectedLanguage = 'English';
+        else if (localeCode == 'ar') _selectedLanguage = 'العربية';
+        else _selectedLanguage = 'Türkçe';
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
-      appBar: AppBar(
-        title: const Text(
-          "Profilim",
-          style: TextStyle(fontWeight: FontWeight.bold),
+        appBar: AppBar(
+        title: Text(
+          AppLocalizations.of(context)?.profileTitle ?? 'Profil',
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
@@ -34,14 +50,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
 
       bottomNavigationBar: BottomNavigationBar(
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: "Ana Sayfa",
+            icon: const Icon(Icons.home),
+            label: AppLocalizations.of(context)?.home ?? 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: "Profil",
+            icon: const Icon(Icons.person),
+            label: AppLocalizations.of(context)?.profile ?? 'Profile',
           ),
         ],
         currentIndex: 1, // PROFIL sayfasında olduğumuzun göstergesi
@@ -79,17 +95,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 const SizedBox(height: 15),
-                const Center(
+                Center(
                   child: Text(
-                    "Ad Soyad (Örnek Kullanıcı)",
-                    style: TextStyle(fontSize: 20, 
+                    AppLocalizations.of(context)?.namePlaceholder ?? 'Ad Soyad (Örnek Kullanıcı)',
+                    style: const TextStyle(fontSize: 20, 
                     fontWeight: FontWeight.w600,
                     color: Colors.white),
                   ),
                 ),
                 const Divider(height: 30),
-                _buildDetailRow(Icons.phone, "Telefon Numarası", "******"),
-                _buildDetailRow(Icons.badge, "Yetki Düzeyi", "Yönetici"),
+                _buildDetailRow(Icons.phone, AppLocalizations.of(context)?.phoneNumber ?? 'Phone Number', "******"),
+                _buildDetailRow(Icons.badge, AppLocalizations.of(context)?.role ?? 'Role', "Yönetici"),
               ],
             ),
           ),
@@ -98,7 +114,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         const SizedBox(height: 25),
 
         Text(
-          "Uygulama Ayarları",
+          AppLocalizations.of(context)?.appSettings ?? 'App Settings',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
@@ -116,32 +132,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                const Row(
+                Row(
                   children: [
-                    Icon(Icons.language, color: Color.fromARGB(255, 255, 255, 255), size: 24),
-                    SizedBox(width: 15),
-                    Text("Dil Seçimi", style: 
-                    TextStyle(fontSize: 16,
-                    color: Colors.white,
-                    ),),
+                    const Icon(Icons.language, color: Color.fromARGB(255, 255, 255, 255), size: 24),
+                    const SizedBox(width: 15),
+                    Text(AppLocalizations.of(context)?.languageSelection ?? 'Language', style: 
+                    const TextStyle(fontSize: 16, color: Colors.white),),
                   ],
                 ),
                 DropdownButton<String>(
                   value: _selectedLanguage,
-                  icon: const Icon(Icons.arrow_drop_down),
+                  icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                   underline: Container(),
+                  selectedItemBuilder: (BuildContext context) {
+                    return _languages.map((value) => Center(child: Text(value, style: const TextStyle(color: Colors.white)))).toList();
+                  },
                   onChanged: (String? newValue) {
                     setState(() {
                       _selectedLanguage = newValue!;
+                      // map selection to locale codes
+                      Locale locale = const Locale('tr');
+                      if (newValue == 'English') locale = const Locale('en');
+                      if (newValue == 'العربية') locale = const Locale('ar');
+                      context.read<LocaleCubit>().setLocale(locale);
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Dil değiştirildi: $newValue")),
+                        SnackBar(content: Text(AppLocalizations.of(context)?.languageChanged(newValue) ?? 'Language changed: $newValue')),
                       );
                     });
                   },
                   items: _languages.map((value) {
                     return DropdownMenuItem<String>(
                       value: value,
-                      child: Text(value),
+                      child: Text(value, style: const TextStyle(color: Colors.black)),
                     );
                   }).toList(),
                 ),
@@ -156,7 +179,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           width: double.infinity,
           child: OutlinedButton.icon(
             icon: const Icon(Icons.logout),
-            label: const Text("Çıkış Yap"),
+            label: Text(AppLocalizations.of(context)?.logout ?? 'Logout'),
             style: OutlinedButton.styleFrom(
               foregroundColor: Colors.red.shade700,
               side: BorderSide(color: Colors.red.shade400),

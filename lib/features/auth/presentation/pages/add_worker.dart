@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../domain/entities/worker.dart';
+import 'package:flinder_app/l10n/app_localizations.dart';
+import 'package:flinder_app/features/auth/domain/entities/worker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../cubit/auth_cubit.dart';
 
@@ -19,80 +20,93 @@ class _AddWorkerPageState extends State<AddWorkerPage> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
 
-  String? selectedStatus;
+  String? selectedRole;
+
   String countryCode = "+90 ";
 
 
 
   @override
   Widget build(BuildContext context) {
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final isAdmin = context.read<AuthCubit>().isAdmin;
+
+    if (!isAdmin) {
+      return Scaffold(
+        body: Center(child: Text(AppLocalizations.of(context)?.onlyAdmins ?? 'Only admins can perform this action.')),
+      );
+    }
+
     return Scaffold(
-
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            // Ad Soyad
-
-            TextField(
-              controller: nameController,
-              decoration: const InputDecoration(labelText: "Çalışanın adını ve soyadını girin"),
-            ),
-            const SizedBox(height: 12),
-
-            // Statü
-            DropdownButtonFormField<String>(
-              initialValue: selectedStatus,
-              items: const [
-                DropdownMenuItem(
-                  value: "Usta",
-                  child: Text("Usta")),
-                DropdownMenuItem(
-                  value: "Ustabaşı", 
-                  child: Text("Ustabaşı")),
-                DropdownMenuItem(
-                  value: "Ürün Planlama Sorumlusu",
-                  child: Text("Ürün Planlama Sorumlusu"),
+      body: Directionality(
+        textDirection: isArabic ? TextDirection.ltr : Directionality.of(context),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                TextField(
+                  controller: nameController,
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)?.enterWorkerName ?? "Enter worker's full name",
+                    hintText: AppLocalizations.of(context)?.namePlaceholder ?? 'Example User',
+                    border: const OutlineInputBorder(),
+                  ),
+                  textAlign: isArabic ? TextAlign.right : TextAlign.left,
                 ),
-                DropdownMenuItem(
-                  value: "Satın Alma Birimi",
-                  child: Text("Satın Alma Birimi"),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: phoneController,
+                  keyboardType: TextInputType.number,
+                  maxLength: 10,
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)?.enterPhone ?? "Enter worker's phone number",
+                    hintText: AppLocalizations.of(context)?.phoneHint ?? '5xx xxx xx xx',
+                    border: const OutlineInputBorder(),
+                  ),
+                  textAlign: isArabic ? TextAlign.right : TextAlign.left,
                 ),
-                DropdownMenuItem(
-                  value: "Yönetim",
-                  child: Text("Yönetim")),
+                const SizedBox(height: 12),
+                DropdownButtonFormField<String>(
+                  initialValue: selectedRole,
+                  items: [
+                    DropdownMenuItem(
+                      value: 'Admin', 
+                      child: Text(AppLocalizations.of(context)?.statusManagement ?? 'Yönetim')),
+                    DropdownMenuItem(
+                      value: 'Purchasing', 
+                      child: Text(AppLocalizations.of(context)?.statusPurchasing ?? 'Satın Alma Birimi')),
+                    DropdownMenuItem(
+                      value: 'ProductionPlanner', 
+                      child: Text(AppLocalizations.of(context)?.statusProductPlanning ?? 'Ürün Planlama Sorumlusu')),
+                    DropdownMenuItem(
+                      value: 'Foreman', 
+                      child: Text(AppLocalizations.of(context)?.statusForeman ?? 'Ustabaşı')),
+                    DropdownMenuItem(
+                      value: 'Worker', 
+                      child: Text(AppLocalizations.of(context)?.statusCraftsman ?? 'Usta')),
+                    
+                  ],
+                  onChanged: (v) => setState(() => selectedRole = v),
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)?.status ?? 'Status',
+                    border: const OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 18),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: _saveWorker,
+                        child: Text(AppLocalizations.of(context)?.save ?? 'Save'),
+                      ),
+                    ),
+                  ],
+                ),
               ],
-
-              onChanged: (value) => setState(() => selectedStatus = value),
-
-              decoration: const InputDecoration(labelText: "Statü"),
-
             ),
-            const SizedBox(height: 12),
-
-            TextField(
-              controller: phoneController,
-              keyboardType: TextInputType.phone,
-              decoration: InputDecoration(
-                labelText: "Çalışanın telefon numarasını giriniz",
-                hintText: "5xx xxx xx xx",
-                prefixText: "$countryCode ", // +90 başlığı
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-            ),
-              ),),
-
-            const Spacer(),
-
-            //Kaydetme butonu
-            ElevatedButton(
-              onPressed:_saveWorker,
-              child: const Text(
-                "Kaydet",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -102,18 +116,18 @@ class _AddWorkerPageState extends State<AddWorkerPage> {
 
     final name = nameController.text;
     final phone =phoneController.text;
-    String? status = selectedStatus;
+    String? role = selectedRole;
 
-    if (name.isEmpty || phone.isEmpty || status == null) {
+    if (name.isEmpty || phone.isEmpty || role == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Lütfen tüm alanları doldurun")),
+        SnackBar(content: Text(AppLocalizations.of(context)?.fillAllFields ?? 'Please fill all fields')),
       );
       return;
     }
 
     if (!isValidTurkishPhone(phone)) {
       ScaffoldMessenger.of(context)
-        .showSnackBar(const SnackBar(content: Text("Geçersiz telefon numarası. Örn: 5xx xxx xx xx"))
+        .showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)?.invalidPhone ?? 'Invalid phone number'))
       );
       return;
     }
@@ -124,7 +138,7 @@ class _AddWorkerPageState extends State<AddWorkerPage> {
     final worker= Worker(
       name: name,
       phone: phone,
-      status: status,
+      role: role
     );
 
     _showConfirmDialog(worker);
@@ -133,10 +147,10 @@ class _AddWorkerPageState extends State<AddWorkerPage> {
 
   Future<void> _addWorkerToApi(Worker worker) async {
   // Diyalogu kapat (Kayıt işlemi devam ederken diyalog açık kalmasın)
-  Navigator.pop(context); 
+  Navigator.pop(context);
 
   ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(content: Text("Çalışan kaydediliyor..."), duration: Duration(seconds: 10)),
+    SnackBar(content: Text(AppLocalizations.of(context)?.savingWorker ?? 'Saving worker...'), duration: const Duration(seconds: 10)),
   );
 
 
@@ -145,16 +159,26 @@ class _AddWorkerPageState extends State<AddWorkerPage> {
 
   final firstName = parts.first;
   final lastName =
-    parts.length > 1 ? parts.sublist(1).join(" ") : "";  
+    parts.length > 1 ? parts.sublist(1).join(" ") : "";
+
+  // Map status code to Turkish label for backend 'Department' field (always Turkish regardless of UI locale)
+  const Map<String, String> _turkishStatus = {
+    'Admin': 'Yönetim',
+    'Purchasing': 'Satın Alma Birimi',
+    'ProductionPlanner': 'Ürün Planlama Sorumlusu',
+    'Worker': 'Usta',
+    'Foreman': 'Ustabaşı',
+  };
+
+  final departmentLabel = _turkishStatus[worker.role] ?? worker.role;
+
   // Backend'in beklediği JSON formatı:
   final payload = {
     "Phone": "90${worker.phone.replaceAll(' ', '')}", // Örnek: "5301234567" -> "905301234567"
-    //"FirstName": worker.name.split(' ').first, // İlk kelimeyi ad olarak al
-    //"LastName": worker.name.split(' ').last,   // Son kelimeyi soyad olarak al
-    "FirstName":firstName, 
-    "LastName": lastName,   
-    "Department": worker.status, // Statü/Bölüm adını yolluyoruz (Backend'de Department olarak geçiyordu)
-    "Role": "Worker" // Varsayılan rol
+    "FirstName": firstName,
+    "LastName": lastName,
+    //"Department": departmentLabel, // Statü/Bölüm adını yolluyoruz (Backend'de Department olarak geçiyordu)
+    "Role":worker.role // Varsayılan rol
   };
 
   try {
@@ -171,12 +195,15 @@ class _AddWorkerPageState extends State<AddWorkerPage> {
 
 
     final normalizedWorker = Worker(
-  name: worker.name,
-  phone: "90${worker.phone.replaceAll(' ', '')}",
-  status: worker.status,
-);
-    context.read<AuthCubit>().addWorker(worker);
-    
+      name: worker.name,
+      phone: "90${worker.phone.replaceAll(' ', '')}",
+      role: worker.role,
+    );
+
+    if (!mounted) return;
+
+    context.read<AuthCubit>().addWorker(normalizedWorker);
+
     // 3. Başarılı geri bildirim ve inputları temizleme
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(response.data['message'] ?? 'Kayıt başarılı!')),
@@ -190,53 +217,70 @@ class _AddWorkerPageState extends State<AddWorkerPage> {
     // 400 Bad Request veya 401 Unauthorized gibi API hataları
     final errorMsg = e.response?.data?['message'] ?? "API'den hata yanıtı alındı.";
     
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Hata: $errorMsg')),
-    );
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Hata: $errorMsg')),
+      );
+    }
   } catch (e) {
     // Diğer genel hatalar (Ağ bağlantısı vb.)
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Kayıt sırasında beklenmeyen bir hata oluştu.')),
-    );
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Kayıt sırasında beklenmeyen bir hata oluştu.')),
+      );
+    }
   }
 }
 
+  String _localizedStatusLabel(String? status, BuildContext context) {
+    switch (status) {
+      case 'Admin':
+        return AppLocalizations.of(context)?.statusManagement ?? 'Yönetim';
+      case 'Purchasing':
+        return AppLocalizations.of(context)?.statusPurchasing ?? 'Satın Alma Birimi';
+      case 'ProductionPlanner':
+        return AppLocalizations.of(context)?.statusProductPlanning ?? 'Ürün Planlama Sorumlusu';
+      case 'Worker':
+        return AppLocalizations.of(context)?.statusCraftsman ?? 'Usta';
+      case 'Foreman':
+        return AppLocalizations.of(context)?.statusForeman ?? 'Ustabaşı';
+      default:
+        return status ?? '';
+    }
+  }
+
   void _showConfirmDialog(Worker worker) {
-    
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (_) {
-      return AlertDialog(
-        title: const Text("Kayıt Onayı"),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Ad: ${worker.name}"),
-            Text("Statü: ${worker.status}"),
-            Text("Telefon: +90 ${worker.phone}"),
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) {
+        return AlertDialog(
+          title: Text(AppLocalizations.of(context)?.confirmSaveTitle ?? 'Save Confirmation'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('${AppLocalizations.of(context)?.workerNameLabel ?? 'Name'}: ${worker.name}'),
+              Text('${AppLocalizations.of(context)?.phoneNumber ?? 'Phone'}: +90 ${worker.phone}'),
+              Text('${AppLocalizations.of(context)?.role ?? 'Role'}: ${_localizedStatusLabel(worker.role, context)}'),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(AppLocalizations.of(context)?.cancel ?? 'Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                _addWorkerToApi(worker);
+              },
+              child: Text(AppLocalizations.of(context)?.ok ?? 'OK'),
+            ),
           ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("İptal"),
-          ),
-          ElevatedButton(
-            onPressed: () { 
-              //context.read<AuthCubit>().addWorker(worker);
-              _addWorkerToApi(worker);
-              //Navigator.pop(context);
-              //_clearInputs();
-            },
-            child: const Text("Tamam"),
-          ),
-        ],
-      );
-    },
-  );
-}
+        );
+      },
+    );
+  }
 
   bool isValidTurkishPhone(String phone) {
     final digits = phone.replaceAll(RegExp(r'\D'), '');
@@ -248,7 +292,7 @@ class _AddWorkerPageState extends State<AddWorkerPage> {
   void _clearInputs() {
     nameController.clear();
     phoneController.clear();
-    selectedStatus = null;
+    selectedRole = null;
     setState(() {});
   }
 
