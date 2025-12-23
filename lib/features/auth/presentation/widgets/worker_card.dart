@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'package:flinder_app/features/auth/domain/entities/worker.dart';
 
 class WorkerCard extends StatelessWidget {
@@ -81,3 +81,4 @@ class WorkerCard extends StatelessWidget {
     );
   }
 }
+*/

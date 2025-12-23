@@ -11,8 +11,23 @@ import 'core/localization/locale_cubit.dart';
 import 'l10n/l10n.dart';
 
 
-void main() {
+//--------------------------------------------
+//import '/app.dart';
+
+import 'package:flinder_app/app.dart';
+import 'package:flinder_app/core/di/injection_container.dart' as di;
+
+
+//-------------------------------------
+void main() async{
+
+//------------------------------------------
+  WidgetsFlutterBinding.ensureInitialized();
+  // Dependency Injection setup
+  await di.init();
+//-----------------------------------------------
   runApp(const MyApp());
+
 }
 
 class MyApp extends StatelessWidget {

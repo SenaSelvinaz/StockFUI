@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'record_operation_screen.dart';
 import 'stock_control.dart';
 import 'profile_screen.dart';
-//import '/features/auth/presentation/pages/test_page.dart';
 import 'package:flinder_app/l10n/app_localizations.dart';
 import 'product_tracking_screen.dart';
 
