@@ -23,6 +23,7 @@
   }
   ,
   "managerPanel": "Manager Panel",
+  "workerPanel": "Worker Panel",
   "recordOperations": "Worker Registration",
   "stockControl": "Stock Control",
   "jobTracking": "Job Tracking",

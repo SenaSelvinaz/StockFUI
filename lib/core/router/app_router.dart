@@ -1,10 +1,11 @@
+import 'package:flinder_app/features/app_pages/presentation/pages/admin_home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // ==================== LOGIN ====================
-import '../../features/auth/presentation/pages/phone_input_page.dart';
-import '../../features/auth/presentation/pages/otp_verification_page.dart';
+import '../../features/login/presentation/pages/phone_input_page.dart';
+import '../../features/login/presentation/pages/otp_verification_page.dart';
 
 // ==================== ORDER ====================
 import 'package:flinder_app/features/order/presentation/pages/order_page.dart';
@@ -15,6 +16,13 @@ import 'package:flinder_app/features/order/domain/entities/order_entity.dart';
 // ==================== CORE ====================
 import 'package:flinder_app/core/services/dio_service.dart';
 import '../di/injection_container.dart';
+///==================== PRODUCTION STAGES ====================
+//////==================== APP PAGES ====================
+import 'package:flinder_app/features/app_pages/presentation/pages/main_ui.dart';
+import 'package:flinder_app/features/app_pages/presentation/pages/worker_home_page.dart';
+
+
+
 
 class AppRouter {
   // ==================== ROUTES ====================
@@ -30,11 +38,16 @@ class AppRouter {
   static const String ustabasiHome = '/ustabasi-home';
   static const String ustaHome = '/usta-home';
 
+  
+
+
+
   // ==================== GOROUTER ====================
 
   static final GoRouter router = GoRouter(
     /// 🔴 GELİŞTİRME MODU
     /// App açılır açılmaz OrderPage
+    //initialLocation: order,
     initialLocation: order,
 
     routes: [
@@ -50,7 +63,7 @@ class AppRouter {
           return OtpVerificationPage(phoneNumber: phoneNumber ?? '');
         },
       ),
-
+    
       // ==================== ORDER ====================
       GoRoute(
         path: order,
@@ -105,7 +118,8 @@ class AppRouter {
                     ),
                     const SizedBox(height: 24),
                     ElevatedButton.icon(
-                      onPressed: () => context.go(order as String),
+                      //onPressed: () => context.go(order as String),
+                      onPressed: () => context.go(AppRouter.order),
                       icon: const Icon(Icons.arrow_back),
                       label: const Text('Sipariş Sayfasına Dön'),
                       style: ElevatedButton.styleFrom(
@@ -124,6 +138,7 @@ class AppRouter {
           }
 
           // Order varsa TaskAssignmentPage'i göster
+          //return TaskAssignmentPage(order: order);
           return TaskAssignmentPage(order: order);
         },
       ),
@@ -131,7 +146,7 @@ class AppRouter {
       // ==================== ROLE BASED ====================
       GoRoute(
         path: yoneticiHome,
-        builder: (context, state) => const YoneticiHomePage(),
+        builder: (context, state) => const AdminHomePage(),
       ),
       GoRoute(
         path: satinAlmaHome,
@@ -147,7 +162,7 @@ class AppRouter {
       ),
       GoRoute(
         path: ustaHome,
-        builder: (context, state) => const UstaHomePage(),
+        builder: (context, state) => const WorkerHomePage(),
       ),
     ],
   );
@@ -323,7 +338,8 @@ Widget _buildHomePage({
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        user['phoneNumber'] ?? '',
+                        ' ${user['phoneNumber'] ?? 'Kullanıcı'}',
+                        //user['phoneNumber'] ?? '',
                         style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                       ),
                       if (user['position'] != null) ...[

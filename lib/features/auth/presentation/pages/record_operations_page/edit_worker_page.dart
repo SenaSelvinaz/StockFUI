@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/entities/worker.dart';
-import '../cubit/auth_cubit.dart';
+import 'package:flinder_app/features/auth/domain/entities/worker.dart';
+//import 'package:flinder_app/features/auth/data/datasources/workers_data.dart';
+import 'package:flinder_app/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:dio/dio.dart'; // Dio için
 
 import 'package:flinder_app/core/services/api_service.dart';
@@ -74,7 +75,7 @@ class _EditWorkerPageState extends State<EditWorkerPage> {
               keyboardType:TextInputType.phone,
               decoration: const InputDecoration(
                 labelText: "Telefon Numarası",
-                prefixText: "+",
+                //prefixText: "+",
                 border: OutlineInputBorder(),
               ),
             ),
@@ -140,13 +141,29 @@ class _EditWorkerPageState extends State<EditWorkerPage> {
   );
 
   try {
+
+
+    final oldPhone = widget.originalPhone;
+    final oldRole = widget.worker.role; // eski rol
+    final newRole = updatedWorker.role;
     // 1️⃣ Telefon değişmiş mi?
-    if (updatedWorker.phone != widget.originalPhone) {
+    if (updatedWorker.phone != oldPhone) {
       await ApiService.put(
         "/api/admin/update-phone",
         data: {
-          "oldPhoneNumber": "${widget.originalPhone}",
-          "newPhoneNumber": "${updatedWorker.phone}",
+          "oldPhoneNumber": oldPhone,
+          "newPhoneNumber": updatedWorker.phone,
+        },
+      );
+    }
+
+    // 2️⃣ Rol değişmiş mi?
+      if (newRole != oldRole) {
+      await ApiService.put(
+        "/api/admin/update-role/${updatedWorker.phone}",
+        data: {
+          //"PhoneNumber": "${updatedWorker.phone}",
+          "NewRole": newRole,
         },
       );
     }
@@ -168,8 +185,7 @@ class _EditWorkerPageState extends State<EditWorkerPage> {
         //"LastName": parts.length > 1 ? parts.last : "",
         "FirstName": firstName,
         "LastName": lastName,
-
-        "Department": updatedWorker.role,
+        "Role": updatedWorker.role,
       },
     );
 
@@ -195,11 +211,5 @@ class _EditWorkerPageState extends State<EditWorkerPage> {
     );
   }
 }
-
-  
-
-
-
-
 
 }

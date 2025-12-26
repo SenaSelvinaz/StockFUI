@@ -1,5 +1,5 @@
 
-import 'package:flinder_app/features/auth/domain/entities/otp_response_entity.dart';
+import 'package:flinder_app/features/login/domain/entities/otp_response_entity.dart';
 
 /// SMS Response Model (DATA)
 class OtpResponseModel extends OtpResponseEntity {

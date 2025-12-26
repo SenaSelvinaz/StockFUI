@@ -1,18 +1,18 @@
 // lib/core/di/injection_container.dart
 
-import 'package:flinder_app/features/auth/domain/usecases/resend_otp_usecase.dart';
-import 'package:flinder_app/features/auth/domain/usecases/send_otp_usecase.dart';
-import 'package:flinder_app/features/auth/domain/usecases/verify_otp_usecase.dart';
+import 'package:flinder_app/features/login/domain/usecases/resend_otp_usecase.dart';
+import 'package:flinder_app/features/login/domain/usecases/send_otp_usecase.dart';
+import 'package:flinder_app/features/login/domain/usecases/verify_otp_usecase.dart';
 import 'package:flinder_app/features/order/data/datasources/Task_remote_datasource.dart';
 import 'package:flinder_app/features/order/domain/usecases/get_order_stages_usecase.dart';
 import 'package:get_it/get_it.dart' as get_it;
 import 'package:dio/dio.dart';
 
 // ==================== LOGIN ====================
-import '../../features/auth/data/datasources/login_datasource.dart';
-import 'package:flinder_app/features/auth/data/repositories/login_repository_impl.dart';
-import '../../features/auth/domain/repositories/login_repository.dart';
-import '../../features/auth/presentation/cubit/login_cubit.dart';
+import '../../features/login/data/datasources/login_datasource.dart';
+import 'package:flinder_app/features/login/data/repositories/login_repository_impl.dart';
+import '../../features/login/domain/repositories/login_repository.dart';
+import '../../features/login/presentation/cubit/login_cubit.dart';
 
 // ==================== ORDER ====================
 import 'package:flinder_app/features/order/data/datasources/order_remote_datasource.dart';
@@ -27,6 +27,10 @@ import 'package:flinder_app/features/order/domain/usecases/check_bom_availabilit
 import 'package:flinder_app/features/order/presentation/cubit/order_cubit.dart';
 // Core Services
 import 'package:flinder_app/core/services/dio_service.dart';
+
+// ==================== AUTH & SETTINGS ====================
+import 'package:flinder_app/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:flinder_app/core/localization/locale_cubit.dart';
 
 final getIt = get_it.GetIt.instance;
 
@@ -118,4 +122,10 @@ Future<void> init() async {
       checkBomAvailabilityUseCase: getIt(), // ✨ YENİ
     ),
   );
+
+  // injection_container.dart içindeki init fonksiyonunun en sonuna ekle:
+
+// ==================== AUTH & SETTINGS ====================
+getIt.registerFactory(() => AuthCubit());
+getIt.registerFactory(() => LocaleCubit());
 }

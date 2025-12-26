@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flinder_app/l10n/app_localizations.dart';
 import 'package:flinder_app/features/auth/domain/entities/worker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../cubit/auth_cubit.dart';
+
+import 'package:flinder_app/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:dio/dio.dart'; // Dio için
 import 'package:flinder_app/core/services/api_service.dart';
 
@@ -172,7 +173,7 @@ class _AddWorkerPageState extends State<AddWorkerPage> {
 
   // Backend'in beklediği JSON formatı:
   final payload = {
-    "Phone": "90${worker.phone.replaceAll(' ', '')}", // Örnek: "5301234567" -> "905301234567"
+    "Phone": "+90${worker.phone.replaceAll(' ', '')}", // Örnek: "5301234567" -> "+905301234567"
     "FirstName": firstName,
     "LastName": lastName,
     //"Department": departmentLabel, // Statü/Bölüm adını yolluyoruz (Backend'de Department olarak geçiyordu)

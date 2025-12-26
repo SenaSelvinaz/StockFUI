@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../cubit/auth_cubit.dart';
-import '../cubit/auth_state.dart';
+import 'package:flinder_app/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:flinder_app/features/auth/presentation/cubit/auth_state.dart';
 import 'package:dio/dio.dart';
 import 'package:flinder_app/l10n/app_localizations.dart';
-import '../../domain/entities/worker.dart';
+import 'package:flinder_app/features/auth/domain/entities/worker.dart';
 import 'package:flinder_app/core/services/api_service.dart';
-import '../widgets/worker_list_item.dart';
+import 'package:flinder_app/features/auth/presentation/widgets/worker_list_item.dart';
 
 class DeleteWorkerPage extends StatefulWidget {
   const DeleteWorkerPage({super.key});
@@ -241,7 +241,7 @@ class _DeleteWorkerPageState extends State<DeleteWorkerPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('${AppLocalizations.of(context)?.workerNameLabel ?? 'Adı Soyadı'}: ${worker.name}'),
-            Text('${AppLocalizations.of(context)?.phoneNumber ?? 'Telefon'}: +${worker.phone}'),
+            Text('${AppLocalizations.of(context)?.phoneNumber ?? 'Telefon'}: ${worker.phone}'),
             Text('${AppLocalizations.of(context)?.role ?? 'Rol'}: ${_roleLabel(context, worker.role)}'),
             const SizedBox(height: 12),
             Text(

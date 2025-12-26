@@ -190,6 +190,12 @@ abstract class AppLocalizations {
   /// **'Language changed: {language}'**
   String languageChanged(Object language);
 
+  /// No description provided for @workerPanel.
+  ///
+  /// In en, this message translates to:
+  /// **'Worker Panel'**
+  String get workerPanel;
+
   /// No description provided for @recordOperations.
   ///
   /// In en, this message translates to:

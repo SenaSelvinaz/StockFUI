@@ -9,8 +9,8 @@ import 'package:flinder_app/core/router/app_router.dart';
 import 'package:flinder_app/core/di/injection_container.dart';
 import '../cubit/login_cubit.dart';
 import '../cubit/login_state.dart';
-import 'package:flinder_app/features/auth/presentation/widgets/badge_widget.dart';
-import 'package:flinder_app/features/auth/presentation/widgets/terms_text.dart';
+import 'package:flinder_app/features/login/presentation/widgets/badge_widget.dart';
+import 'package:flinder_app/features/login/presentation/widgets/terms_text.dart';
 class PhoneInputPage extends StatelessWidget {
   const PhoneInputPage({super.key});
 

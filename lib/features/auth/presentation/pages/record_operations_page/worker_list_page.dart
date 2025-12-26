@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flinder_app/l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../cubit/auth_cubit.dart';
-import '../cubit/auth_state.dart';
-import '../widgets/worker_list_item.dart';
+import 'package:flinder_app/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:flinder_app/features/auth/presentation/cubit/auth_state.dart';
+import 'package:flinder_app/features/auth/presentation/widgets/worker_list_item.dart';
+
 import 'package:flinder_app/features/auth/domain/entities/worker.dart';
 import 'package:dio/dio.dart'; // Dio için
 import 'package:flinder_app/core/services/api_service.dart';
@@ -46,10 +47,12 @@ Future<void> _fetchAndLoadWorkers() async {
         
 
         final String phoneNumber = (item['phoneNumber'] as String? ?? '').replaceAll(' ', '');
+        
 
         return Worker(
             name: item['fullName'] ?? 'İsimsiz', // FullName null ise 'İsimsiz' ata.
-            phone: phoneNumber.replaceAll(' ', ''), // 905XXXXXXXXX,
+            //phone: phoneNumber.replaceAll(' ', ''), // 905XXXXXXXXX,
+            phone: phoneNumber, // 905XXXXXXXXX,
             role: item['role'] ?? 'Worker', // Department null ise 'Worker' ata.
         );
     }).toList();

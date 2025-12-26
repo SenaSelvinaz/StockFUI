@@ -1,6 +1,6 @@
-import 'package:flinder_app/features/auth/presentation/pages/delikleme_gorevi_page.dart';
-import 'package:flinder_app/features/auth/presentation/pages/kesim_gorevi_page.dart';
-import 'package:flinder_app/features/auth/presentation/pages/paketleme_gorevi_page.dart';
+import 'package:flinder_app/features/production_stages/presentation/pages/production_records_page/delikleme_gorevi_page.dart';
+import 'package:flinder_app/features/production_stages/presentation/pages/production_records_page/kesim_gorevi_page.dart';
+import 'package:flinder_app/features/production_stages/presentation/pages/production_records_page/paketleme_gorevi_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flinder_app/l10n/app_localizations.dart';
 import 'kaynak_gorevi_page.dart';

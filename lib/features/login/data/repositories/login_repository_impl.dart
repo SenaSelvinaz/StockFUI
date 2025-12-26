@@ -3,7 +3,7 @@
 import 'package:dio/dio.dart';
 import '../../domain/entities/otp_response_entity.dart';
 import '../../domain/entities/user_entity.dart';
-import 'package:flinder_app/features/auth/domain/repositories/login_repository.dart';
+import 'package:flinder_app/features/login/domain/repositories/login_repository.dart';
 import '../datasources/login_datasource.dart';
 
 class LoginRepositoryImpl implements LoginRepository {

@@ -1,9 +1,32 @@
+import 'package:flinder_app/features/auth/data/models/current_user.dart';
+import 'package:flinder_app/core/services/dio_service.dart'; 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'auth_state.dart';
 import '../../domain/entities/worker.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   AuthCubit() : super(AuthInitial());
+
+  CurrentUser? me;
+
+Future<void> fetchMe() async {
+  emit(AuthMeLoading());
+
+  try {
+    final response = await DioService.get("/api/me");
+
+    final Map<String, dynamic> map =
+        Map<String, dynamic>.from(response.data['data']);
+
+    final user = CurrentUser.fromMap(map);
+    me = user;
+
+    emit(AuthMeLoaded(user));
+  } catch (e) {
+    emit(AuthError(e.toString()));
+  }
+}
+
 
   List<Worker> allWorkers = [];
   List<Worker> filteredWorkers = [];
@@ -59,7 +82,7 @@ class AuthCubit extends Cubit<AuthState> {
 
   String _normalizePhone(String phone) {
   return phone
-      .replaceAll('+', '')
+      //.replaceAll('+', '')
       .replaceAll(' ', '');
       //.replaceFirst('90', '');
 }
@@ -97,5 +120,7 @@ class AuthCubit extends Cubit<AuthState> {
     
     emit(AuthLoaded(filteredWorkers));
   }
-}
+ }
+
+
 }

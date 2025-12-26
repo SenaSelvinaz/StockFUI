@@ -2,9 +2,9 @@
 // ✅ CLEAN: Sadece endpoint + model mapping
 
 import 'package:dio/dio.dart';
-import 'package:flinder_app/features/auth/data/models/user_model.dart';
-import 'package:flinder_app/features/auth/data/models/otp_response_model.dart';
-import 'package:flinder_app/features/auth/data/models/login_response_model.dart';
+import 'package:flinder_app/features/login/data/models/user_model.dart';
+import 'package:flinder_app/features/login/data/models/otp_response_model.dart';
+import 'package:flinder_app/features/login/data/models/login_response_model.dart';
 
 abstract class LoginDataSource {
   /// SMS kodu gönder

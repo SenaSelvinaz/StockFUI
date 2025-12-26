@@ -56,6 +56,9 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
+  String get workerPanel => 'Worker Panel';
+
+  @override
   String get recordOperations => 'Çalışan Kayıt İşlemleri';
 
   @override

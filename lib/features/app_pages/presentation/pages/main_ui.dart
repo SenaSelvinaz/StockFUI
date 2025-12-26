@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
-import 'record_operation_screen.dart';
-import 'stock_control.dart';
+//import 'stock_control.dart';
 import 'profile_screen.dart';
 import 'package:flinder_app/l10n/app_localizations.dart';
-import 'product_tracking_screen.dart';
+import 'package:flinder_app/features/production_stages/presentation/pages/production_records_page/product_tracking_screen.dart';
+
+import 'package:flinder_app/features/auth/presentation/pages/record_operations_page/record_operation_screen.dart';
+import 'package:flinder_app/features/auth/presentation/pages/stock_control_screen.dart';
+
+
 
 class MainUI extends StatelessWidget {
   const MainUI({super.key});

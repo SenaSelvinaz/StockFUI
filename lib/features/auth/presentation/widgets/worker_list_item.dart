@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flinder_app/core/theme/app_theme.dart';
 import 'package:flinder_app/features/auth/presentation/cubit/auth_cubit.dart';
-import 'package:flinder_app/features/auth/presentation/pages/edit_worker_page.dart';
+import 'package:flinder_app/features/auth/presentation/pages/record_operations_page/edit_worker_page.dart';
 import 'package:flinder_app/l10n/app_localizations.dart';
 import 'package:flinder_app/features/auth/domain/entities/worker.dart';// Worker sınıfınızı buradan import edin
 class WorkerListItem extends StatelessWidget {

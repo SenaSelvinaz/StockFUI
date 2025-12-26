@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'package:flinder_app/features/auth/domain/usecases/resend_otp_usecase.dart';
-import 'package:flinder_app/features/auth/domain/usecases/send_otp_usecase.dart';
-import 'package:flinder_app/features/auth/domain/usecases/verify_otp_usecase.dart';
+import 'package:flinder_app/features/login/domain/usecases/resend_otp_usecase.dart';
+import 'package:flinder_app/features/login/domain/usecases/send_otp_usecase.dart';
+import 'package:flinder_app/features/login/domain/usecases/verify_otp_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flinder_app/features/auth/presentation/cubit/login_state.dart';
+import 'package:flinder_app/features/login/presentation/cubit/login_state.dart';
 import 'package:flinder_app/core/services/dio_service.dart';
 
 class LoginCubit extends Cubit<LoginState> {

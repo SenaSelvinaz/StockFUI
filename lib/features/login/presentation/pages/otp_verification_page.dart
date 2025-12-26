@@ -6,6 +6,8 @@ import 'package:flinder_app/core/constants/app_strings.dart';
 import 'package:flinder_app/core/di/injection_container.dart';
 import '../cubit/login_cubit.dart';
 import '../cubit/login_state.dart';
+import 'package:go_router/go_router.dart';
+import 'package:flinder_app/core/router/app_router.dart';
 
 class OtpVerificationPage extends StatelessWidget {
   final String phoneNumber;
@@ -65,14 +67,34 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
         ),
       ),
       body: BlocConsumer<LoginCubit, LoginState>(
+        //------------------------------------------
         listener: (context, state) {
           if (state is LoginSuccess) {
+            final user = state.user;
+
+
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text('Giriş başarılı!'),
                 backgroundColor: Colors.green,
               ),
             );
+
+    if (user.isYonetici) {
+      context.go(AppRouter.yoneticiHome);
+    } else if (user.isSatinAlma) {
+      context.go(AppRouter.satinAlmaHome);
+    } else if (user.isUretimPlanlama) {
+      context.go(AppRouter.uretimPlanlamaHome);
+    } else if (user.isUstabasi) {
+      context.go(AppRouter.ustabasiHome);
+    } else if (user.isUsta) {
+      context.go(AppRouter.ustaHome);
+    } else {
+      context.go(AppRouter.phoneInput);
+    }
+  
+
             // Ana sayfaya yönlendirme yapılabilir
           }
           if (state is LoginError) {
@@ -84,6 +106,8 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
             );
           }
         },
+
+        //---------------------------------------
         builder: (context, state) {
           final resendSeconds = state is OtpResendCountdown ? state.seconds : 0;
           final canResend = resendSeconds == 0;

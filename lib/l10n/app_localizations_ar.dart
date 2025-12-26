@@ -56,6 +56,9 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String get workerPanel => 'Worker Panel';
+
+  @override
   String get recordOperations => 'تسجيل الموظف';
 
   @override

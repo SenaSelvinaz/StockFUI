@@ -1,5 +1,5 @@
 
-import 'package:flinder_app/features/auth/domain/entities/user_entity.dart';
+import 'package:flinder_app/features/login/domain/entities/user_entity.dart';
 
 class UserModel {
   final String id;

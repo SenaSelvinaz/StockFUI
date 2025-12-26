@@ -1,5 +1,5 @@
 import '../entities/user_entity.dart';
-import 'package:flinder_app/features/auth/domain/repositories/login_repository.dart';
+import 'package:flinder_app/features/login/domain/repositories/login_repository.dart';
 
 /// SMS kodunu doğrula
 class VerifyOtpUseCase {
